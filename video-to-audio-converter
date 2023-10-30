@@ -1,0 +1,86 @@
+from tkinter import *
+import tkinter.messagebox as msg
+from tkinter import filedialog, Label
+import os
+import tkinter.ttk as ttk
+from PIL import ImageTk, Image
+import moviepy.editor as mp
+
+root = Tk()
+root.geometry("1200x650+0+0")
+
+mp3_cho = StringVar()
+
+# global path
+
+def upload():
+    global path
+    path = filedialog.askopenfilename(initialdir=os.getcwd(), title="select Music file",
+                                      filetype=(("Mp4 file", "*.mp4"), ("Mkv file", "*.mkv")))
+    print(path)
+    text_name.config(text="File Loaded!")
+
+
+def con():
+    if mp3_cho.get() == "Mp3":
+        my_clip = mp.VideoFileClip(path)
+        my_clip.audio.write_audiofile(f"{path[8:20]}.mp3")
+        msg.showinfo("Success", "Your File has been converted")
+
+    elif mp3_cho.get() == "Wav":
+        my_clip = mp.VideoFileClip(path)
+        my_clip.audio.write_audiofile(f"{path[8:20]}.wav")
+        msg.showinfo("Success", "Your File has been converted")
+
+root.resizable(False, False)
+root.configure(bg="#FFF")
+# root.state("zoomed")
+root.title("Audio Converter")
+
+frame = Frame(root, bg="#F7F7F8", bd=5)
+frame.place(x=90, y=320, height=250, width=1000)
+
+btn_1 = PhotoImage(file='button_add-files.png')
+btn_2 = PhotoImage(file='button_choose-format.png')
+btn_3 = PhotoImage(file='button_convert-now.png')
+logo = PhotoImage(file='Audio-Converter.png')
+
+# wave = PhotoImage(file='wave.png')
+
+wave_img = Image.open('wave.png')
+wave_img = wave_img.resize((700, 130), Image.LANCZOS)
+wave = ImageTk.PhotoImage(wave_img)
+
+logo_t = Label(root, image=logo, bd=0, bg="#FFF")
+logo_t.place(x=420, y=10)
+
+wave_t = Label(root, image=wave, bd=0, bg="#FFF")
+wave_t.place(x=230, y=110)
+
+btn_add = Button(frame, image=btn_1, bd=0, command=upload)
+btn_add.place(x=40, y=100)
+
+text_1 = Label(frame, text="Add Files", bg="#F7F7F8", fg="#15D798", font=("Times New Roman", 12, "bold"))
+text_1.place(x=80, y=160)
+
+text_name = Label(frame, text="", bg="#F7F7F8", fg="#15D798", font=("Times New Roman", 12, "bold"))
+text_name.place(x=80, y=190)
+
+btn_for = Button(frame, image=btn_2, bd=0)
+btn_for.place(x=410, y=100)
+
+# lbl2 = Label(frame, text="Choose Formate", bg="#15d798", fg="#FFF", font="sans-serif 15 bold")  # Verdana
+# lbl2.place(x=410, y=100)
+
+lbl2_combo = ttk.Combobox(frame, textvariable=mp3_cho, font="Verdana 8 bold", width=18, state="readonly")
+lbl2_combo["values"] = ("Select File Types", "Mp3", "Wav")
+lbl2_combo.current(0)
+lbl2_combo.place(x=410, y=170)
+
+btn_con = Button(frame, image=btn_3, bd=0, command=con)
+btn_con.place(x=770, y=100)
+
+text_2 = Label(frame, text="Alert with sound !", bg="#F7F7F8", fg="#15D798", font=("Times New Roman", 12, "bold"), bd=0)
+text_2.place(x=800, y=160)
+
+root.mainloop()
